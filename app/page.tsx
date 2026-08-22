@@ -32,7 +32,14 @@ export default function Home() {
         <button type="submit">Shorten</button>
       </form>
 
-      {shortCode && <p>Short code: {shortCode}</p>}
+        {shortCode && (
+    <p>
+      Short link:{" "}
+      <a href={`https://url-shortener-webapp.vercel.app/${shortCode}`} target="_blank">
+        {`https://url-shortener-webapp.vercel.app/${shortCode}`}
+      </a>
+    </p>
+  )}
     </div>
   );
 }
