@@ -5,9 +5,13 @@ import { useState } from "react";
 export default function Home() {
   const [url, setUrl] = useState("");
   const [shortCode, setShortCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+
+    setLoading(true);
 
     const response = await fetch("/api/shorten", {
       method: "POST",
@@ -17,6 +21,7 @@ export default function Home() {
 
     const data = await response.json();
     setShortCode(data.code);
+    setLoading(false);
   }
 
   return (
@@ -29,7 +34,9 @@ export default function Home() {
           onChange={(event) => setUrl(event.target.value)}
           placeholder="Enter a URL"
         />
-        <button type="submit">Shorten</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Shortening..." : "Shorten"}
+        </button>
       </form>
 
         {shortCode && (
