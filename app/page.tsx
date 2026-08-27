@@ -11,17 +11,32 @@ export default function Home() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      setError("Please enter a valid URL starting with http:// or https://");
+      return;
+    }
+
     setLoading(true);
+    setError("");
 
-    const response = await fetch("/api/shorten", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ longUrl: url }),
-    });
+    try {
+      const response = await fetch("/api/shorten", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ longUrl: url }),
+      });
 
-    const data = await response.json();
-    setShortCode(data.code);
-    setLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to shorten URL")
+      }
+
+      const data = await response.json();
+      setShortCode(data.code);
+    } catch (err) {
+      setError("Something went wrong. Please try again.")
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
