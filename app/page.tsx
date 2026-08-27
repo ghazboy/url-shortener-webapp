@@ -1,12 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { Copy, Check, Scissors } from "lucide-react";
 
 export default function Home() {
   const [url, setUrl] = useState("");
   const [shortCode, setShortCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+function handleCopy() {
+  navigator.clipboard.writeText(`https://url-shortener-webapp.vercel.app/${shortCode}`);
+  setCopied(true);
+  setTimeout(() => setCopied(false), 2000);
+}
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -62,21 +70,33 @@ export default function Home() {
           disabled={loading}
           className="bg-[#1A2E4A] text-white px-6 py-3 font-medium hover:bg-[#14253d] transition"
         >
-          {loading ? "Shortening..." : "Shorten"}
+          {loading ? "Shortening..." : (
+            <>
+              <Scissors size={16} />
+              Shorten
+            </>
+          )}
         </button>
       </form>
 
-      {shortCode && (
-        <p className="mt-6 text-gray-700">
-          Short link:{" "}
-          <a href={`https://url-shortener-webapp.vercel.app/${shortCode}`}
-              target="_blank"
-              className="text-red-800 font-medium underline"
-          >
-            {`https://url-shortener-webapp.vercel.app/${shortCode}`}
-          </a>
-        </p>
-      )}
+    {shortCode && (
+    <div className="mt-6 w-full max-w-md bg-white rounded-lg shadow-md p-3 flex items-center justify-between">
+    
+      <a href={`https://url-shortener-webapp.vercel.app/${shortCode}`}
+      target="_blank"
+      className="text-red-800 font-medium underline truncate text-sm"
+      >
+        {`https://url-shortener-webapp.vercel.app/${shortCode}`}
+      </a>
+      <button
+        onClick={handleCopy}
+        className="ml-4 bg-[#1A2E4A] text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-[#14253d] transition flex items-center gap-1"
+      >
+        {copied ? <Check size={14} /> : <Copy size={14} />}
+        {copied ? "Copied!" : "Copy"}
+      </button>
+    </div>
+  )}
     </div>
   );
 }
