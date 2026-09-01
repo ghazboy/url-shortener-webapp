@@ -19,8 +19,13 @@ function handleCopy() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
+    if (!url.trim()) {
+      setError("Form tidak boleh kosong. Silakan masukkan URL.");
+      return;
+    }
+
     if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      setError("Please enter a valid URL starting with http:// or https://");
+      setError("URL tidak valid. Contoh URL yang benar: https://example.com");
       return;
     }
 
@@ -97,6 +102,8 @@ function handleCopy() {
       </button>
     </div>
   )}
+
+  {error && <p className="mt-4 text-red-600 text-sm">{error}</p>}
     </div>
   );
 }
